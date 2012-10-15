@@ -1,25 +1,16 @@
-<?php 
-	global $CONFIG;
-	$text = get_plugin_setting("maintenance_text","maintenance");
-	
-	$form_body = "<table><tr><td>";
-	$form_body .= elgg_echo('username') . "</td><td>" . elgg_view('input/text', array('internalname' => 'username', 'class' => 'login-textarea')) . "</td><td>";
-	$form_body .= "</td></tr><tr><td>";
-	$form_body .= elgg_echo('password') . "</td><td>" . elgg_view('input/password', array('internalname' => 'password', 'class' => 'login-textarea')) . "</td><td>";
-	
-	$form_body .= elgg_view('input/submit', array('value' => elgg_echo('login')));
-	$form_body .= "</td></tr></table>";
-	
-	$login_url = $vars['url'];
-	if ((isset($CONFIG->https_login)) && ($CONFIG->https_login))
-		$login_url = str_replace("http", "https", $vars['url']);
-	
+<?php
+
+$site_url = elgg_get_site_url();
+
+global $CONFIG;
+$text = elgg_get_plugin_setting("maintenance_text", "maintenance");
+
 ?>
 <html>
 	<head>
-		<script type="text/javascript" src="<?php echo $CONFIG->wwwroot;?>vendors/jquery/jquery-1.2.6.pack.js"></script>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 		<script type="text/javascript">
-			function showAdmin(){
+			function maintenance_showAdmin(){
 				$("#admin_login").toggle("slow");
 			}
 		</script>
@@ -32,10 +23,13 @@
 			
 			#maintenance_box {
 				margin: 15% auto;
-				
 				position:relative;
-				width: 972px;
 				border: 1px solid #DEDEDE;
+
+			}
+			#maintenance_box td {
+				padding: 1em;
+				vertical-align: top;
 			}
 			
 			#image_container {
@@ -47,39 +41,38 @@
 			}
 			
 			img {
-				margin-right:40px;
-				
+				margin-right: 20px;
+			}
+			fieldset {
+				border: 0;
+				padding: 0;
 			}
 		</style>
-		
 	</head>
 	<body>
-		<div id="maintenance_box">
-			
-			<table>
-			<tr>
-				<td id="image_container">
-					<img src="<?php echo $CONFIG->wwwroot;?>mod/maintenance/_graphics/maintenance.png">
-				</td>
-				<td>
-					<h1>	
-					<?php echo elgg_echo("maintenance:info");?>
-					</h1>
-					<p>
-						<?php echo $text;?>
-					</p>
-					<p>
-						<?php echo sprintf(elgg_echo("maintenance:adminlogin"), "<a href='javascript:showAdmin()'>" , "</a>");?>
-					</p>
-					<div id="admin_login">
-						<?php echo elgg_view('input/form', array('body' => $form_body, 'action' => "{$login_url}action/login"));?>		
-	
-					</div>		
-				</td>
-			</tr>
-			</table>
-			
-		</div>
+		<table id="maintenance_box">
+		<tr>
+			<td id="image_container">
+				<img src="<?php echo $site_url;?>mod/maintenance/_graphics/maintenance.png" alt="">
+			</td>
+			<td>
+				<h1>
+				<?php echo elgg_echo("maintenance:info");?>
+				</h1>
+				<p>
+					<?php echo $text; ?>
+				</p>
+				<p>
+					<?php echo sprintf(elgg_echo("maintenance:adminlogin"), "<a href='javascript:maintenance_showAdmin()'>" , "</a>");?>
+				</p>
+				<div id="admin_login">
+					<?php echo elgg_view_form('login'); ?>
+				</div>
+			</td>
+		</tr>
+		</table>
 	</body>
 </html>
-<?php exit();?>
+<?php
+
+exit();
